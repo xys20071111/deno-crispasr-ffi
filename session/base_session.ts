@@ -1,4 +1,4 @@
-import { loadAudio, strToPtr } from "../utils/create_c_object.ts";
+import { Audio, loadAudio, strToPtr } from "../utils/create_c_object.ts";
 import { LibDef, loadLib } from "../utils/load_lib.ts";
 
 export interface AudioResult {
@@ -25,7 +25,7 @@ export abstract class BaseSession {
         }
     }
 
-    public loadAudio(audioPath: string) {
+    public loadAudio(audioPath: string): Audio {
         return loadAudio(this.lib, audioPath);
     }
 

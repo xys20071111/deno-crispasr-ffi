@@ -1,4 +1,10 @@
-import { LibDef } from "./load_lib.ts";
+import type { LibDef } from "./load_lib.ts";
+
+export interface Audio {
+   sr: number
+   sampleCount: number
+   pcm: Float32Array
+}
 
 const encoder = new TextEncoder();
 
@@ -9,7 +15,7 @@ export function strToPtr(str: string): Deno.PointerValue {
 export function loadAudio(
    lib: Deno.StaticForeignLibraryInterface<LibDef>,
    audioPath: string,
-) {
+): Audio {
    const sampleCountPtr = new Uint8Array(4);
    const sampleRatePtr = new Uint8Array(4);
    const pcmArrayPtr = new BigUint64Array(1); // *float[]
