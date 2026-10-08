@@ -1,10 +1,7 @@
-import { Audio, loadAudio, strToPtr } from "../utils/create_c_object.ts";
-import { LibDef, loadLib } from "../utils/load_lib.ts";
-
-export interface AudioResult {
-    pcm: Float32Array;
-    sampleRate: number;
-}
+import { strToPtr } from "../utils/str_to_prt.ts";
+import { type LibDef, loadLib } from "../utils/load_lib.ts";
+import { type Audio, loadAudio } from "../utils/load_audio.ts";
+import { type AudioResult, saveAudio } from "../utils/save_audio.ts";
 
 export abstract class BaseSession {
     protected lib: Deno.StaticForeignLibraryInterface<LibDef>;
@@ -30,18 +27,7 @@ export abstract class BaseSession {
     }
 
     public saveAudio(audio: AudioResult, savePath: string) {
-        const lenBuf = new BigUint64Array(1);
-        const wavPtr = this.lib.crispasr_pcm_to_wav(
-            Deno.UnsafePointer.of(audio.pcm),
-            audio.pcm.length,
-            audio.sampleRate,
-            Deno.UnsafePointer.of(lenBuf),
-        );
-        if (wavPtr) {
-            const len = Number(lenBuf[0]);
-            const wav = Deno.UnsafePointerView.getArrayBuffer(wavPtr, len);
-            Deno.writeFileSync(savePath, new Uint8Array(wav));
-        }
+        saveAudio(this.lib, audio, savePath)
     }
 
     public closeSession() {

@@ -1,5 +1,6 @@
-import { strToPtr } from "../utils/create_c_object.ts";
-import { type AudioResult, BaseSession } from "./base_session.ts";
+import type { AudioResult } from "../utils/save_audio.ts";
+import { strToPtr } from "../utils/str_to_prt.ts";
+import { BaseSession } from "./base_session.ts";
 
 export class TTSSession extends BaseSession {
   constructor(libPath: string, modelPath: string, codecPath?: string) {

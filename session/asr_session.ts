@@ -1,4 +1,4 @@
-import { strToPtr } from "../utils/create_c_object.ts";
+import { strToPtr } from "../utils/str_to_prt.ts";
 import { BaseSession } from "./base_session.ts";
 
 interface Word {

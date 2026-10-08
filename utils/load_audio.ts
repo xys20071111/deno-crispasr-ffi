@@ -1,4 +1,5 @@
 import type { LibDef } from "./load_lib.ts";
+import { strToPtr } from "./str_to_prt.ts";
 
 export interface Audio {
    sr: number
@@ -6,11 +7,6 @@ export interface Audio {
    pcm: Float32Array
 }
 
-const encoder = new TextEncoder();
-
-export function strToPtr(str: string): Deno.PointerValue {
-   return Deno.UnsafePointer.of(encoder.encode(str + "\0"));
-}
 
 export function loadAudio(
    lib: Deno.StaticForeignLibraryInterface<LibDef>,

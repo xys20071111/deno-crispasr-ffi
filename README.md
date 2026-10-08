@@ -21,15 +21,13 @@ console.log(result);
 ```typescript
 import { TTSSession } from "../../session/tts_session.ts";
 
-session = new TTSSession(
+const session = new TTSSession(
   "lib/libcrispasr.so.0.8.41",
   "example/tts/qwen3-tts-12hz-1.7b-voicedesign-q8_0.gguf",
   "example/tts/qwen3-tts-tokenizer-12hz.gguf",
 );
-const vd = session.runVoiceDesign(
-  "你好，很高兴认识你！",
-  "年轻，富有活力的少女音",
-);
-session.saveAudio(vd, "sample_tts.wav");
+session.setDesign("年轻，富有活力的少女音");
+const vd = session.runVoiceDesign("你好，很高兴认识你！");
+session.saveAudio(vd, "test_2.wav");
 session.closeSession();
 ```
