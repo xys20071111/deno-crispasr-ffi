@@ -9,6 +9,28 @@ export class TTSSession extends BaseSession {
       strToPtr(""),
     );
   }
+
+  public setRefText(text: string | null, audio: string) {
+    const rc = this.lib.crispasr_session_set_voice(
+      this.session,
+      strToPtr(audio),
+      text ? strToPtr(text) : null,
+    );
+    if (rc !== 0) {
+      throw new Error(`set_voice failed: ${rc}`);
+    }
+  }
+
+  public setDesign(design: string) {
+    const rc = this.lib.crispasr_session_set_instruct(
+      this.session,
+      strToPtr(design),
+    );
+    if (rc !== 0) {
+      throw new Error(`set_instruct failed: ${rc}`);
+    }
+  }
+
   public resetSession(modelPath: string) {
     const session = this.lib.crispasr_session_open(
       strToPtr(modelPath),
@@ -19,6 +41,7 @@ export class TTSSession extends BaseSession {
     }
     this.session = session;
   }
+
   private generate(text: string): AudioResult {
     const sampleRate = this.lib.crispasr_session_output_sample_rate(
       this.session,
@@ -55,8 +78,6 @@ export class TTSSession extends BaseSession {
 
   public override run(
     text: string,
-    referenceVoicePath: string,
-    referenceText?: string,
   ): AudioResult {
     if (this.codecPath) {
       this.lib.crispasr_session_set_codec_path(
@@ -64,28 +85,13 @@ export class TTSSession extends BaseSession {
         strToPtr(this.codecPath),
       );
     }
-    const rc = this.lib.crispasr_session_set_voice(
-      this.session,
-      strToPtr(referenceVoicePath),
-      referenceText ? strToPtr(referenceText) : null,
-    );
-    if (rc !== 0) {
-      throw new Error(`set_voice failed: ${rc}`);
-    }
 
     return this.generate(text);
   }
 
-  public runVoiceDesign(text: string, design: string): AudioResult {
+  public runVoiceDesign(text: string): AudioResult {
     if (this.lib.crispasr_session_is_voice_design(this.session) !== 1) {
       console.warn("当前模型不是 VoiceDesign 变体");
-    }
-    const rc = this.lib.crispasr_session_set_instruct(
-      this.session,
-      strToPtr(design),
-    );
-    if (rc !== 0) {
-      throw new Error(`set_instruct failed: ${rc}`);
     }
 
     return this.generate(text);
